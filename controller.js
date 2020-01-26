@@ -160,23 +160,27 @@ app.controller('gameCtrl', ['$scope', '$log', 'ModalService', function($scope, $
         $scope.wrong3=false;
 
         $scope.questionsDone++;
-        ModalService.showModal({
-            templateUrl: 'question.html',
-            controller: "ModalController",
-            scope: $scope,
-        }).then(function(modal) {
-            modal.element.modal();
-            $scope.currentQ = Object.keys(QandA)[0];
-            $scope.currentA = QandA[$scope.currentQ];
-            $scope.currentURL = QandA.url;
-            $scope.dollars = dollars;
-            modal.close.then(function(player) {
-                $scope.wrongAnswers = 0;
-                player.score += Number(dollars);
-                $('.modal-backdrop').remove()
-                $scope.showA();
+        if($scope.FinalJeopardy){
+            $scope.showBetting();
+        } else {
+            ModalService.showModal({
+                templateUrl: 'question.html',
+                controller: "ModalController",
+                scope: $scope,
+            }).then(function(modal) {
+                modal.element.modal();
+                $scope.currentQ = Object.keys(QandA)[0];
+                $scope.currentA = QandA[$scope.currentQ];
+                $scope.currentURL = QandA.url;
+                $scope.dollars = dollars;
+                modal.close.then(function(player) {
+                    $scope.wrongAnswers = 0;
+                    player.score += Number(dollars);
+                    $('.modal-backdrop').remove()
+                    $scope.showA();
+                });
             });
-        });
+        }
     };
 
     $scope.showA = function() {
@@ -188,7 +192,7 @@ app.controller('gameCtrl', ['$scope', '$log', 'ModalService', function($scope, $
             modal.element.modal();
             modal.close.then(function(result) {
                 $log.log($scope.questionsDone);
-                if ($scope.questionsDone === 30) {
+                if ($scope.questionsDone === 2) {
                     $scope.FinalJeopardy = true;
                 }
             });
